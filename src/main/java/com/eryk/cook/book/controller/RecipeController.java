@@ -20,11 +20,22 @@ public class RecipeController {
         return recipeService.getAll();
     }
 
+    @GetMapping("{id}")
+    public Recipe getById(@PathVariable int id) {
+        return recipeService.getById(id);
+    }
     @PostMapping("")
     public Recipe create(@RequestBody Recipe recipe) {
         return recipeService.save(recipe);
     }
 
+    @PutMapping("")
+    public void update(@RequestBody Recipe recipe) {
+        recipeService.save(recipe);
+    }
 
-
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable int id) {
+        recipeService.delete(id);
+    }
 }
