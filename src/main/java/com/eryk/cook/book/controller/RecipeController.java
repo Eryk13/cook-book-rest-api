@@ -1,14 +1,9 @@
 package com.eryk.cook.book.controller;
 
 import com.eryk.cook.book.helper.NotFoundException;
-import com.eryk.cook.book.model.ErrorResponse;
 import com.eryk.cook.book.model.Recipe;
 import com.eryk.cook.book.service.RecipeService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
