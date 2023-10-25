@@ -1,8 +1,14 @@
 package com.eryk.cook.book.controller;
 
+import com.eryk.cook.book.helper.NotFoundException;
+import com.eryk.cook.book.model.ErrorResponse;
 import com.eryk.cook.book.model.Recipe;
 import com.eryk.cook.book.service.RecipeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -22,7 +28,7 @@ public class RecipeController {
 
     @GetMapping("{id}")
     public Recipe getById(@PathVariable int id) {
-        return recipeService.getById(id);
+        return findById(id);
     }
 
     @PostMapping("")
@@ -37,6 +43,14 @@ public class RecipeController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
+        findById(id);
         recipeService.delete(id);
+    }
+    private Recipe findById(int id) {
+        Recipe recipe = recipeService.getById(id);
+        if(recipe == null) {
+            throw new NotFoundException("recipe with id: " + id + " not found");
+        }
+        return recipe;
     }
 }
