@@ -3,6 +3,7 @@ package com.eryk.cook.book.controller;
 import com.eryk.cook.book.helper.NotFoundException;
 import com.eryk.cook.book.model.Recipe;
 import com.eryk.cook.book.service.RecipeService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,12 +28,13 @@ public class RecipeController {
     }
 
     @PostMapping("")
-    public Recipe create(@RequestBody Recipe recipe) {
+    public Recipe create(@Valid @RequestBody Recipe recipe) {
         return recipeService.save(recipe);
     }
 
     @PutMapping("")
-    public void update(@RequestBody Recipe recipe) {
+    public void update(@Valid @RequestBody Recipe recipe) {
+        findById(recipe.getId());
         recipeService.save(recipe);
     }
 

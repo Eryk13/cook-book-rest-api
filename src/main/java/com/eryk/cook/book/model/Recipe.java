@@ -1,6 +1,8 @@
 package com.eryk.cook.book.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
@@ -12,12 +14,17 @@ public class Recipe {
     @Column(name = "id")
     private int id;
 
+    @NotBlank(message = "title is required")
+
     @Column(name = "title")
     private String title;
+
+    @NotBlank(message = "instructions are required")
 
     @Column(name = "instructions")
     private String instructions;
 
+    @NotEmpty(message = "ingredients are required")
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}

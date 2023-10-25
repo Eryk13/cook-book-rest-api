@@ -2,6 +2,7 @@ package com.eryk.cook.book.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class Ingredient {
     @Column(name = "id")
     private int id;
 
+    @NotBlank(message = "name is required")
     @Column(name = "name")
     private String name;
 
