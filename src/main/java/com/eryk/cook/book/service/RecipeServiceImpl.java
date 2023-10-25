@@ -26,6 +26,7 @@ public class RecipeServiceImpl implements RecipeService{
     public List<Recipe> getAll() {
         return recipeRepository.findAll();
     }
+
     @Override
     public Recipe getById(int id) {
         Optional<Recipe> result = recipeRepository.findById(id);

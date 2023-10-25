@@ -24,6 +24,7 @@ public class RecipeController {
     public Recipe getById(@PathVariable int id) {
         return recipeService.getById(id);
     }
+
     @PostMapping("")
     public Recipe create(@RequestBody Recipe recipe) {
         return recipeService.save(recipe);
