@@ -8,6 +8,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,10 +37,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable) // (1)
-                .authorizeRequests( auth -> auth
-                        .anyRequest().authenticated() // (2)
-                )
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+                .authorizeHttpRequests(c -> c
+                        .requestMatchers(HttpMethod.GET, "/recipes").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/recipes/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/recipes").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "/recipes").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/recipes/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll())
 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // (3)
                 .httpBasic(Customizer.withDefaults()) // (4)
