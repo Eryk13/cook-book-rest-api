@@ -43,6 +43,7 @@ public class RecipeController {
         findById(id);
         recipeService.delete(id);
     }
+
     private Recipe findById(int id) {
         Recipe recipe = recipeService.getById(id);
         if(recipe == null) {
