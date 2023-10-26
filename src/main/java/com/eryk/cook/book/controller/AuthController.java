@@ -1,7 +1,6 @@
 package com.eryk.cook.book.controller;
 
 import com.eryk.cook.book.service.TokenService;
-import com.eryk.cook.book.service.TokenServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
