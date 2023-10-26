@@ -17,16 +17,4 @@ public class CookBookApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CookBookApplication.class, args);
 	}
-
-	@Bean
-	public InMemoryUserDetailsManager users() {
-		return new InMemoryUserDetailsManager(
-				User.withUsername("dvega")
-						.password("{noop}password")
-						.authorities("read")
-						.build()
-		);
-	}
-
-
 }
