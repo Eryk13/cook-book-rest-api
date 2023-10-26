@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 @Service
 public class TokenServiceImpl implements TokenService{
     private final JwtEncoder encoder;
+
     public TokenServiceImpl(JwtEncoder encoder) {
         this.encoder = encoder;
     }
+
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
         String scope = authentication.getAuthorities().stream()
