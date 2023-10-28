@@ -1,11 +1,14 @@
 package com.eryk.cook.book.config;
 
+import com.eryk.cook.book.helper.CustomAuthenticationEntryPoint;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,7 +25,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import javax.sql.DataSource;
 
@@ -30,9 +35,12 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class SecurityConfig {
     private final RsaKeyProperties rsaKeys;
+    AuthenticationEntryPoint authEntryPoint;
 
-    public SecurityConfig(RsaKeyProperties rsaKeys) {
+    @Autowired
+    public SecurityConfig(RsaKeyProperties rsaKeys, @Qualifier("customAuthenticationEntryPoint") AuthenticationEntryPoint authEntryPoint) {
         this.rsaKeys = rsaKeys;
+        this.authEntryPoint = authEntryPoint;
     }
 
     @Bean
@@ -46,7 +54,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(h -> h.authenticationEntryPoint(this.authEntryPoint))
                 .build();
     }
 
@@ -74,5 +82,7 @@ public class SecurityConfig {
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 }
 
