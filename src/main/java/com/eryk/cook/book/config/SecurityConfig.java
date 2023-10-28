@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -36,18 +38,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable) // (1)
-                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(c -> c
+                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/recipes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/recipes/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/recipes").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/recipes").hasRole("USER")
-                        .requestMatchers(HttpMethod.DELETE, "/recipes/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll())
-
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // (3)
-                .httpBasic(Customizer.withDefaults()) // (4)
+                        .anyRequest().authenticated())
+                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 
@@ -65,7 +64,15 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource) {
-        return new JdbcUserDetailsManager(dataSource);
+        JdbcUserDetailsManager manager =  new JdbcUserDetailsManager(dataSource);
+        manager.setUsersByUsernameQuery("SELECT username, password, enabled FROM users WHERE username=?");
+        manager.setAuthoritiesByUsernameQuery("select username, name from user_role t1 join users t2 on user_id=t2.id join roles t3 on role_id=t3.id WHERE username=?");
+        return manager;
+    }
+
+    @Bean
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
     }
 }
 

@@ -3,6 +3,7 @@ package com.eryk.cook.book.helper;
 import com.eryk.cook.book.model.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,7 +36,6 @@ public class GlobalExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         }
-        Map<String, String> error = new HashMap<>();
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
