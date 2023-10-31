@@ -28,4 +28,9 @@ public class UserServiceImpl implements UserService{
         user.addRoleToUser(newRole);
         return userRepository.save(user);
     }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }

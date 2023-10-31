@@ -2,6 +2,7 @@ package com.eryk.cook.book.service;
 
 import com.eryk.cook.book.model.Ingredient;
 import com.eryk.cook.book.model.Recipe;
+import com.eryk.cook.book.model.User;
 import com.eryk.cook.book.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,13 +29,19 @@ public class RecipeServiceImpl implements RecipeService{
     }
 
     @Override
+    public List<Recipe> getAll(int userId) {
+        return recipeRepository.findByUserId(userId);
+    }
+
+
+    @Override
     public Recipe getById(int id) {
         Optional<Recipe> result = recipeRepository.findById(id);
         return result.orElse(null);
     }
 
     @Override
-    public Recipe save(Recipe recipe) {
+    public Recipe save(Recipe recipe, User user) {
         List<Ingredient> ingredients = new ArrayList<>();
         for(Ingredient ingredient : recipe.getIngredients()) {
             Ingredient ingredientDb = ingredientService.findByName(ingredient.getName());
@@ -45,6 +52,7 @@ public class RecipeServiceImpl implements RecipeService{
                 ingredients.add(ingredientDb);
         }
         recipe.setIngredients(ingredients);
+        recipe.setUser(user);
         return recipeRepository.save(recipe);
     }
 

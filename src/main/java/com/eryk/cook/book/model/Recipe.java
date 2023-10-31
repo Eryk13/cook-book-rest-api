@@ -24,6 +24,9 @@ public class Recipe {
     @Column(name = "instructions")
     private String instructions;
 
+    @ManyToOne()
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
     @NotEmpty(message = "ingredients are required")
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -35,6 +38,7 @@ public class Recipe {
             inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
     private List<Ingredient> ingredients;
+
 
     public Recipe() {
     }
@@ -75,5 +79,13 @@ public class Recipe {
 
     public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

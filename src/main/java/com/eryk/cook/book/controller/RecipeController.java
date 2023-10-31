@@ -1,9 +1,14 @@
 package com.eryk.cook.book.controller;
 
+import com.eryk.cook.book.helper.IdNotMatchException;
 import com.eryk.cook.book.helper.NotFoundException;
 import com.eryk.cook.book.model.Recipe;
+import com.eryk.cook.book.model.User;
 import com.eryk.cook.book.service.RecipeService;
+import com.eryk.cook.book.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,35 +17,52 @@ import java.util.List;
 @RequestMapping("recipes")
 public class RecipeController {
     private RecipeService recipeService;
+    private UserService userService;
 
-    public RecipeController(RecipeService recipeService) {
+    public RecipeController(RecipeService recipeService, UserService userService) {
         this.recipeService = recipeService;
+        this.userService = userService;
     }
 
     @GetMapping("")
     public List<Recipe> getAll() {
-        return recipeService.getAll();
+        User user = getUser();
+        return recipeService.getAll(user.getId());
     }
 
     @GetMapping("{id}")
     public Recipe getById(@PathVariable int id) {
-        return findById(id);
+        User user = getUser();
+        Recipe recipe = findById(id);
+        if(recipe.getUser().getId() != user.getId()) {
+            throw new IdNotMatchException("recipe doesn't belong to user");
+        }
+        return recipe;
     }
 
     @PostMapping("")
     public Recipe create(@Valid @RequestBody Recipe recipe) {
-        return recipeService.save(recipe);
+        User user = getUser();
+        return recipeService.save(recipe, user);
     }
 
     @PutMapping("")
     public void update(@Valid @RequestBody Recipe recipe) {
-        findById(recipe.getId());
-        recipeService.save(recipe);
+        User user = getUser();
+        Recipe recipeDb = findById(recipe.getId());
+        if(recipeDb.getUser().getId() != user.getId()) {
+            throw new IdNotMatchException("recipe doesn't belong to user");
+        }
+        recipeService.save(recipe, user);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
-        findById(id);
+        User user = getUser();
+        Recipe recipe = findById(id);
+        if(recipe.getUser().getId() != user.getId()) {
+            throw new IdNotMatchException("recipe doesn't belong to user");
+        }
         recipeService.delete(id);
     }
 
@@ -50,5 +72,10 @@ public class RecipeController {
             throw new NotFoundException("recipe with id: " + id + " not found");
         }
         return recipe;
+    }
+    private User getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return userService.findByUsername(username);
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 @SpringBootApplication
@@ -17,4 +19,6 @@ public class CookBookApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CookBookApplication.class, args);
 	}
+
+
 }

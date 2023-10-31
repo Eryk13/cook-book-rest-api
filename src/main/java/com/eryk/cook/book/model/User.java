@@ -29,6 +29,10 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<Role> roles;
+
+    @OneToMany(mappedBy = "user")
+    private List<Recipe> recipes;
+
     public User() {
     }
 

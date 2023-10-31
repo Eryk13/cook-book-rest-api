@@ -4,5 +4,7 @@ import com.eryk.cook.book.model.User;
 import com.eryk.cook.book.model.UserRegisterDto;
 
 public interface UserService {
-    public User register(UserRegisterDto user);
+    User register(UserRegisterDto user);
+    User findByUsername(String username);
+
 }
