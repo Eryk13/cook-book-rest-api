@@ -1,5 +1,6 @@
 package com.eryk.cook.book.controller;
 
+import com.eryk.cook.book.helper.AlreadyExistsException;
 import com.eryk.cook.book.model.User;
 import com.eryk.cook.book.model.UserRegisterDto;
 import com.eryk.cook.book.service.TokenService;
@@ -35,8 +36,11 @@ public class AuthController {
         return res;
     }
     @PostMapping("/register")
-    public Map<String, String> register(@RequestBody @Valid UserRegisterDto userDto) {
+    public Map<String, String> register(@RequestBody @Valid UserRegisterDto userDto) throws AlreadyExistsException {
         User user = userService.register(userDto);
+        if(user == null) {
+            throw new AlreadyExistsException("user with this username already exists");
+        }
         Map<String, String> res = new HashMap<>();
         res.put("username", user.getUsername());
         return res;

@@ -52,6 +52,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleException(AlreadyExistsException e) {
+        ErrorResponse error = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         ErrorResponse error = new ErrorResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);

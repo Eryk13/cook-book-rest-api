@@ -1,5 +1,6 @@
 package com.eryk.cook.book.service;
 
+import com.eryk.cook.book.helper.AlreadyExistsException;
 import com.eryk.cook.book.model.Role;
 import com.eryk.cook.book.model.User;
 import com.eryk.cook.book.model.UserRegisterDto;
@@ -22,7 +23,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User register(UserRegisterDto userDto) {
+    public User register(UserRegisterDto userDto){
+        User exists = userRepository.findByUsername(userDto.getUsername());
+        if(exists != null) {
+            return null;
+        }
         User user = new User(userDto.getUsername(), passwordEncoder.encode(userDto.getPassword()), true);
         Role newRole = roleService.createRole(new Role("USER"));
         user.addRoleToUser(newRole);
