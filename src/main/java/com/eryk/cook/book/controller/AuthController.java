@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -44,5 +45,12 @@ public class AuthController {
         Map<String, String> res = new HashMap<>();
         res.put("username", user.getUsername());
         return res;
+    }
+
+    @GetMapping("/user")
+    public User getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return userService.findByUsername(username);
     }
 }
