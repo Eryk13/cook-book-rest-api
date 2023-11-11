@@ -5,7 +5,11 @@ import com.eryk.cook.book.model.Recipe;
 import com.eryk.cook.book.model.User;
 import com.eryk.cook.book.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +33,9 @@ public class RecipeServiceImpl implements RecipeService{
     }
 
     @Override
-    public List<Recipe> getAll(int userId) {
-        return recipeRepository.findByUserId(userId);
+    public Page<Recipe> getAll(int userId, int page, int itemsPerPage) {
+        Pageable pageable = PageRequest.of(page, itemsPerPage);
+        return recipeRepository.findByUserId(userId, pageable);
     }
 
 

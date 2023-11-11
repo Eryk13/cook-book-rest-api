@@ -7,11 +7,11 @@ import com.eryk.cook.book.model.User;
 import com.eryk.cook.book.service.RecipeService;
 import com.eryk.cook.book.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("recipes")
@@ -25,9 +25,9 @@ public class RecipeController {
     }
 
     @GetMapping("")
-    public List<Recipe> getAll() {
+    public Page<Recipe> getAll(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "itemsPerPage", defaultValue = "2") int itemsPerPage) {
         User user = getUser();
-        return recipeService.getAll(user.getId());
+        return recipeService.getAll(user.getId(), page, itemsPerPage);
     }
 
     @GetMapping("{id}")
