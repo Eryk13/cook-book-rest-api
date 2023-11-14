@@ -25,9 +25,10 @@ public class RecipeController {
     }
 
     @GetMapping("")
-    public Page<Recipe> getAll(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "itemsPerPage", defaultValue = "2") int itemsPerPage) {
+    public Page<Recipe> getAll(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "itemsPerPage", defaultValue = "2") int itemsPerPage,
+                               @RequestParam(name = "search", defaultValue = "") String search) {
         User user = getUser();
-        return recipeService.getAll(user.getId(), page, itemsPerPage);
+        return recipeService.getAll(user.getId(), page, itemsPerPage, search);
     }
 
     @GetMapping("{id}")

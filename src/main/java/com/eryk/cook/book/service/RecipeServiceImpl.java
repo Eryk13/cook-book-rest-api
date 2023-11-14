@@ -33,9 +33,9 @@ public class RecipeServiceImpl implements RecipeService{
     }
 
     @Override
-    public Page<Recipe> getAll(int userId, int page, int itemsPerPage) {
+    public Page<Recipe> getAll(int userId, int page, int itemsPerPage, String search) {
         Pageable pageable = PageRequest.of(page, itemsPerPage);
-        return recipeRepository.findByUserId(userId, pageable);
+        return recipeRepository.findByUserIdAndTitleContains(userId, pageable, search);
     }
 
 

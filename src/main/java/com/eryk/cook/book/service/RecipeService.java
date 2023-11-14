@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface RecipeService {
     List<Recipe> getAll();
-    Page<Recipe> getAll(int user_id, int page, int itemsPerPage);
+    Page<Recipe> getAll(int user_id, int page, int itemsPerPage, String search);
     Recipe getById(int id);
     Recipe save(Recipe recipe, User user);
     void delete(int id);
